@@ -13,42 +13,42 @@ Seams = zeros(m, n);
 for t = 1:times
 	%compute energe
     map = gbvs(I2);
-	E_ori = map.master_map;
-    E = mat2gray(imresize( map , [ m n ] ));
+    %show_imgnmap( I2 , map );
+    E = map.master_map_resized;
 	%compute seams
 	for j = 1:m %height
 		for i = 1:n %width
 			if j == 1
-				Seams(i, 1) = E(i, j);
+				Seams(j, i) = E(j, i);
 			else 
 				%get the currnet end point of seams
 				if j == 2
 					cur = i;
 				else
-					cur = Seams(i, j - 1);
+					cur = Seams(j - 1, i);
 				end
 				%find minimum cost
 				%try center
 				next = cur;
-				cost = E(next, j);
+				cost = E(j, next);
 				%try left
 				if cur - 1 > 1
-					if E(cur - 1, j) < cost
+					if E(j, cur - 1) < cost
 						next = cur - 1;
-						cost = E(next, j);
+						cost = E(j, next);
 					end
 				end
 				%try right
 				if i + 1  <= n 
-					if E(cur + 1, j) < cost
+					if E(j, cur + 1) < cost
 						next = cur + 1;
-						cost = E(next, j);
+						cost = E(j, next);
 					end
 				end
 
 				%update seams
-				Seams(i, 1) = Seams(i, 1) + cost;
-				Seams(i, j) = cost;
+				Seams(1, i) = Seams(1, i) + cost;
+				Seams(j, i) = next;
 			end
 		end
 	end
@@ -57,11 +57,11 @@ for t = 1:times
 	for i = 1:n 
 		if i == 1
 			sm = i;
-			sm_value = Seams(i, 1);
+			sm_value = Seams(1, i);
 		else
-			if Seams(i, 1) < sm_value
+			if Seams(1, i) < sm_value
 				sm = i;
-				sm_value = Seams(i, 1);
+				sm_value = Seams(1, i);
 			end
 		end
 	end
@@ -70,13 +70,13 @@ for t = 1:times
 	for j = 1:m %height
 		%shift cells
 		for i = 1:n %width
-			if (i > Seams(sm, j)) && (i <= n - 1)
-				I2(i, j) = I2(i + 1, j);
+			if (i > Seams(j, sm)) && (i <= n - 1)
+				I2(j, i, :) = I2(j, i + 1, :);
 			end
 		end
 	end
 	%delete last culomn
-	I2(:,n) = [];
+	I2(:,n,:) = [];
 	n = n - 1;
 end
 
