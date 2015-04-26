@@ -14,7 +14,7 @@ for t = 1:times
 	%compute energe
     map = gbvs(I2);
 	E_ori = map.master_map;
-    E = mat2gray(imresize( map , [ m, n ] ));
+    E = mat2gray(imresize( map , [ m n ] ));
 	%compute seams
 	for j = 1:m %height
 		for i = 1:n %width
