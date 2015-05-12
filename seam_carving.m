@@ -6,8 +6,8 @@ n = size(I, 2); % width
 m = size(I, 1); % height
 
 %minus wigth
-new_width = n - 10;
-times = n - new_width;
+%new_width = n - 10;
+times = n - m;
 Seams = zeros(m, n);
 
 for t = 1:times
@@ -87,5 +87,5 @@ subplot(1,2,2);
 image(I2);
 
 %result
-imwrite(I2, result.jpg);
+imwrite(I2, 'result.jpg');
 
