@@ -9,8 +9,8 @@ h = size(I, 1); % height
 %new_width = w - 10;
 %times = w - m;
 times = 1;
-Seams = zeros(m, n);
-pos = zeros(m, n);
+Seams = zeros(w, h);
+Pos = zeros(w, h);
 
 
 %compute energe
@@ -23,6 +23,25 @@ for t = 1:times
 	for j = 1:h %height
 		for i = 1:w %width
 			if j == 1 %first row
+				Seams(1, i) == E(1, i);
+			else
+				%choose smallest front pos
+				min_pos = i;
+				min_value = Seams(j - 1, i);
+
+				if (i - 1 >= 1) && (Seams(j - 1, i - 1) < min_value)
+					min_pos = i - 1;
+					min_value = Seams(j - 1, i - 1);
+				end
+
+				if (i + 1 <= w) && (Seams(j - 1, i + 1) < min_value)
+					min_pos = i + 1;
+					min_value = Seams(j - 1, i + 1);
+				end
+
+				%save last pos and update current cost
+				Pos(j, i) = min_pos;
+				Seams(j, i) = Seams(j - 1, i) + min_value;
 			end
 		end
 	end
@@ -33,12 +52,13 @@ for t = 1:times
 			sm = i;
 			sm_value = Seams(h, i);
 		else
-			if Seams(1, i) < sm_value
+			if Seams(h, i) < sm_value
 				sm = i;
-				sm_value = Seams(1, i);
+				sm_value = Seams(h, i);
 			end
 		end
 	end
+
 	%{
 
 	%delete smallest seams
@@ -55,6 +75,13 @@ for t = 1:times
 	w = w - 1;
 
 	%}
+
+	%draw seam
+	i = sm;
+	for j = h:-1:1
+		I2(j, i, :) = 0;
+		i = Pos(j, i);
+	end
 end
 
 %dispaly images
@@ -65,4 +92,3 @@ image(I2);
 
 %result
 imwrite(I2, 'result.jpg');
-
