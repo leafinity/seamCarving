@@ -60,28 +60,30 @@ for t = 1:times
 	end
 
 	%{
-
-	%delete smallest seams
-	for j = 1:h %height
-		%shift cells
-		for i = 1:w %width
-			if (i > Seams(j, sm)) && (i <= w - 1)
-				I2(j, i, :) = I2(j, i + 1, :);
-			end
-		end
-	end
-	%delete last culomn
-	I2(:,n,:) = [];
-	w = w - 1;
-
-	%}
-
 	%draw seam
 	i = sm;
 	for j = h:-1:1
 		I2(j, i, :) = 0;
 		i = Pos(j, i);
 	end
+	%}
+
+
+
+	%delete smallest seams
+	%shift 
+	i = sm;
+	for j = h:-1:1
+		for k = i:(w - 1)
+			I2(j, k, :) = I2(j, k + 1, :);
+		end
+		i = Pos(j, i);
+	end
+
+	%delete last culomn
+	I2(:,w,:) = [];
+	w = w - 1;
+
 end
 
 %dispaly images
